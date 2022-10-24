@@ -155,7 +155,7 @@ class TextClust(base.Clusterer):
         self.macro_distance = self.distances(self.macro_distance)
 
     def learn_one(self, x, t=None, sample_weight=None):
-
+        clusterId = None
         localdict = {}
         for key in x.keys():
             new_key = key
