@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import itertools
-from typing import Optional
 
 import numpy as np
 
@@ -25,10 +24,7 @@ class Logical(datasets.base.SyntheticDataset):
     shuffle
         If set, generated data will be shuffled.
     seed
-        If int, `seed` is used to seed the random number generator;
-        If RandomState instance, `seed` is the random number generator;
-        If None, the random number generator is the `RandomState` instance used
-        by `np.random`.
+        Random seed for reproducibility.
 
     Examples
     --------
@@ -38,9 +34,9 @@ class Logical(datasets.base.SyntheticDataset):
 
     >>> for x, y in dataset.take(5):
     ...     print(x, y)
-    {'A': 0, 'B': 1} {'OR': 1, 'XOR': 1, 'AND': 0}
-    {'A': 0, 'B': 1} {'OR': 1, 'XOR': 1, 'AND': 0}
+    {'A': 1, 'B': 1} {'OR': 1, 'XOR': 0, 'AND': 1}
     {'A': 0, 'B': 0} {'OR': 0, 'XOR': 0, 'AND': 0}
+    {'A': 1, 'B': 0} {'OR': 1, 'XOR': 1, 'AND': 0}
     {'A': 1, 'B': 1} {'OR': 1, 'XOR': 0, 'AND': 1}
     {'A': 1, 'B': 0} {'OR': 1, 'XOR': 1, 'AND': 0}
 
@@ -50,7 +46,7 @@ class Logical(datasets.base.SyntheticDataset):
         self,
         n_tiles: int = 1,
         shuffle: bool = True,
-        seed: Optional[int | np.random.RandomState] = None,
+        seed: int | None = None,
     ):
         super().__init__(
             n_features=2,
@@ -61,11 +57,13 @@ class Logical(datasets.base.SyntheticDataset):
         self.n_tiles = n_tiles
         self.shuffle = shuffle
         self.seed = seed
-        self.rng = seed if isinstance(seed, np.random.RandomState) else np.random.RandomState(seed)
+        self._rng: np.random.Generator
         self.feature_names = ["A", "B"]
         self.target_names = ["OR", "XOR", "AND"]
 
     def __iter__(self):
+        self._rng = np.random.default_rng(self.seed)
+
         X, Y = self._make_logical(n_tiles=self.n_tiles, shuffle=self.shuffle)
 
         for xi, yi in itertools.zip_longest(X, Y if hasattr(Y, "__iter__") else []):
@@ -93,7 +91,7 @@ class Logical(datasets.base.SyntheticDataset):
         pattern[:, L:E] = base_pattern[:, 0:D]
         pattern = np.tile(pattern, (n_tiles, 1))
         if shuffle:
-            self.rng.shuffle(pattern)
+            self._rng.shuffle(pattern)
         # return X, Y
         return (
             np.array(pattern[:, L:E], dtype=int),

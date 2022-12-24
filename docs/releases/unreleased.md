@@ -1,38 +1,42 @@
 # Unreleased
 
-- Introducing the `bandit` module for running multi-armed bandits
-- Introducing the `sketch` module with summarization tools and data sketches working in a streaming fashion!
+## base
 
-## bandit
+- Fixed an issue where an estimator that has attribute a pipeline could not be cloned.
 
-- Added `bandit.EpsilonGreedy`.
-- Added `bandit.UCB`.
-- Added `bandit.ThomsonSampling`.
-- Added a `bandit.base` module.
-- Added `bandit.envs.CandyCaneContest`, which implements the Gym interface.
-- Added `bandit.evaluate` for basic benchmarking of bandit policies on a Gym environment.
+## conf
 
-## drift
+- Introduced this new module to perform conformal predictions.
+- Added a `conf.Interval` dataclass to represent predictive intervals.
+- Added `conf.RegressionJackknife`.
 
-- Exposed more parameters in ADWIN: `clock`, `max_buckets`, `min_window_length`, and `grace_period`.
+## datasets
 
-## model_selection
+- Removed unnecessary Numpy usage in the `synth` submodule.
+- Changed `np.random.RandomState` to `np.random.default_rng` where necessary.
 
-- Added `model_selection.BanditRegressor`, which is a generic model selection method that works with any bandit policy.
-- Removed `model_selection.EpsilonGreedyRegressor` due to the addition of `model_selection.BanditRegressor`.
-- Removed `model_selection.UCBRegressor` due to the addition of `model_selection.BanditRegressor`.
+## linear_model
 
-## proba
+- Renamed `use_dist` to `with_dist` in `linear_model.BayesianLinearRegression`'s `predict_one` method.
 
-- Added `proba.Beta`.
-- Added a `sample` method to each distribution.
-- Added a `mode` property to each distribution.
-- Replaced the `pmf` and `pdf` methods with a `__call__` method.
+## preprocessing
+
+- Renamed `alpha` to `fading_factor` in `preprocessing.AdaptiveStandardScaler`.
+
+## rules
+
+- Renamed `alpha` to `fading_factor` in `rules.AMRules`.
 
 ## sketch
 
-- Moved `misc.Histogram` to `sketch.Histogram`.
-- Moved `stats.LossyCount` to `sketch.HeavyHitters` and update its API to better match `collections.Counter`.
-- Added missing return `self` in `HeavyHitters`.
-- Added the Count-Min Sketch (`sketch.Counter`) algorithm for approximate element counting.
-- Added an implementation of Bloom filter (`sketch.Set`) to provide approximate set-like operations.
+- Renamed `alpha` to `fading_factor` in `sketch.HeavyHitters`.
+
+## stats
+
+- Renamed `alpha` to `fading_factor` in `stats.Entropy`.
+- Renamed `alpha` to `fading_factor` in `stats.EWMean`.
+- Renamed `alpha` to `fading_factor` in `stats.EWVar`.
+
+## utils
+
+- Removed artifacts from the merger.

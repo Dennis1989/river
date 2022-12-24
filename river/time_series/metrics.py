@@ -9,9 +9,7 @@ from river import base, metrics
 
 class ForecastingMetric(base.Base, abc.ABC):
     @abc.abstractmethod
-    def update(
-        self, y_true: typing.List[Number], y_pred: typing.List[Number]
-    ) -> "ForecastingMetric":
+    def update(self, y_true: list[Number], y_pred: list[Number]) -> ForecastingMetric:
         """Update the metric at each step along the horizon.
 
         Parameters
@@ -28,7 +26,7 @@ class ForecastingMetric(base.Base, abc.ABC):
         """
 
     @abc.abstractmethod
-    def get(self) -> typing.List[float]:
+    def get(self) -> list[float]:
         """Return the current performance along the horizon.
 
         Returns
@@ -42,7 +40,9 @@ class HorizonMetric(ForecastingMetric):
     """Measures performance at each time step ahead.
 
     This allows to measure the performance of a model at each time step along the horizon. A copy
-    of the provided regression metric is made for each time step.
+    of the provided regression metric is made for each time step. At each time step ahead, the
+    metric is thus evaluated on each prediction for said time step, and not for the time steps before
+    or after that.
 
     Parameters
     ----------

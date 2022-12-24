@@ -33,4 +33,11 @@ repos:
         name: mypy
         language: python
         types: [python]
-        entry: mypy
+        entry: mypy --implicit-optional
+
+      - id: pyupgrade
+        name: pyupgrade
+        language: python
+        types: [ python ]
+        entry: pyupgrade --py38-plus
+        
